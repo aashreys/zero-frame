@@ -18,6 +18,31 @@
     ],
     "id": "hello-world",
     "name": "Zero Frame",
-    "main": "src/main.ts"
+    "menu": [
+      {
+        "name": "Create Zero Height Frame",
+        "main": "src/create-zero-height-frame/main.ts",
+        "parameters": [
+          {
+            "key": "length",
+            "name": "Enter Frame width",
+            "description": "Enter the desired width for your Zero Frame (defaults to 100px)",
+            "optional": true
+          }
+        ]
+      },
+      {
+        "name": "Create Zero Width Frame",
+        "main": "src/create-zero-width-frame/main.ts",
+        "parameters": [
+          {
+            "key": "length",
+            "name": "Enter Frame height",
+            "description": "Enter the desired height for your Zero Frame (defaults to 100px)",
+            "optional": true
+          }
+        ]
+      }
+    ]
   }
 }
