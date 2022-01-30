@@ -26,7 +26,8 @@
           {
             "key": "length",
             "name": "Enter Frame width",
-            "description": "Enter the desired width for your Zero Frame (defaults to 100px)",
+            "description": "Enter the width for your Zero Frame (defaults to 100px)",
+            "allowFreeform": true,
             "optional": true
           }
         ]
@@ -38,10 +39,19 @@
           {
             "key": "length",
             "name": "Enter Frame height",
-            "description": "Enter the desired height for your Zero Frame (defaults to 100px)",
+            "description": "Enter the height for your Zero Frame (defaults to 100px)",
+            "allowFreeform": true,
             "optional": true
           }
         ]
+      },
+      {
+        "name": "Wrap in Zero Height Frame",
+        "main": "src/wrap-zero-height-frame/main.ts"
+      },
+      {
+        "name": "Wrap in Zero Width Frame",
+        "main": "src/wrap-zero-width-frame/main.ts"
       }
     ]
   }

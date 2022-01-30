@@ -6,8 +6,8 @@ export default function () {
   })
 
   figma.on('run', ({ command, parameters }: RunEvent) => {
-    let zeroFrame = createZeroHeightFrame(parseInt(parameters?.length))
-    zeroFrame.name = 'Zero Height Frame'
-    figma.closePlugin()
+    let frame = createZeroHeightFrame(parseInt(parameters?.length))
+    figma.viewport.scrollAndZoomIntoView([frame])
+    figma.closePlugin(`Created ${frame.name}`)
   })
 }
