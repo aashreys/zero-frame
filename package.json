@@ -21,7 +21,10 @@
     "menu": [
       {
         "name": "Create Zero Height Frame",
-        "main": "src/create-zero-height-frame/main.ts",
+        "main": {
+          "src": "src/create-zero-frame.ts",
+          "handler": "createZeroHeightFrame"
+        },
         "parameters": [
           {
             "key": "length",
@@ -34,7 +37,10 @@
       },
       {
         "name": "Create Zero Width Frame",
-        "main": "src/create-zero-width-frame/main.ts",
+        "main": {
+          "src": "src/create-zero-frame.ts",
+          "handler": "createZeroWidthFrame"
+        },
         "parameters": [
           {
             "key": "length",
@@ -47,11 +53,31 @@
       },
       {
         "name": "Wrap in Zero Height Frame",
-        "main": "src/wrap-zero-height-frame/main.ts"
+        "main": {
+          "src": "src/wrap-in-zero-frame.ts",
+          "handler": "wrapInZeroHeightFrame"
+        }
       },
       {
         "name": "Wrap in Zero Width Frame",
-        "main": "src/wrap-zero-width-frame/main.ts"
+        "main": {
+          "src": "src/wrap-in-zero-frame.ts",
+          "handler": "wrapInZeroWidthFrame"
+        }
+      },
+      {
+        "name": "Add Zero Height Frame to Auto Layout",
+        "main": {
+          "src": "src/add-to-autolayout.ts",
+          "handler": "addZeroHeightFrameToAutoLayout"
+        }
+      },
+      {
+        "name": "Add Zero Width Frame to Auto Layout",
+        "main": {
+          "src": "src/add-to-autolayout.ts",
+          "handler": "addZeroWidthFrameToAutoLayout"
+        }
       }
     ]
   }
