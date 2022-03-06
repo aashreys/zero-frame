@@ -1,14 +1,6 @@
 import { ZeroFrameType, _createZeroFrame } from "./zero-frame-lib";
 
-export function wrapInZeroWidthFrame() {
-  return _wrapInZeroFrame(ZeroFrameType.WIDTH)
-}
-
-export function wrapInZeroHeightFrame() {
-  return _wrapInZeroFrame(ZeroFrameType.HEIGHT)
-}
-
-function _wrapInZeroFrame(type: ZeroFrameType) {
+export function wrapInZeroFrame(type: ZeroFrameType) {
   let layers = figma.currentPage.selection
   if (layers.length > 0) {
     let parent = layers[0].parent;

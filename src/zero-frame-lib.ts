@@ -1,34 +1,94 @@
+import { getEffectiveHeight, getEffectiveWidth, isAutoLayout } from "./utils";
+
 const DEFAULT_FRAME_LENGTH = 100;
 
 export function _createZeroFrame(type: ZeroFrameType, length?: number): FrameNode {
-  /* The resize() API does not allow setting a Frame's height or width 
-  to 0 so instead we create a Line, wrap it in an AutoLayout frame, then 
-  convert it into a regular Frame, and finally remove the Line */
-  
-  // Create a Line
+  let frame = figma.createFrame()
+  frame.name = 'Frame'
+  length = length ? length : DEFAULT_FRAME_LENGTH
+  frame.resize(length, length)
+  return _convertToZeroFrame(type, frame)
+}
+
+export function _convertToZeroFrame(type: ZeroFrameType, frame: FrameNode): FrameNode {
+  /* Store child information and remove children from the frame we're about to 
+  convert to a zero frame. */
+  let children: Array<any> = []
+  for (let child of frame.children) {
+    children.push({
+      layer: child,
+      x: child.x,
+      y: child.y
+    })
+    figma.currentPage.appendChild(child)
+  }
+
+  let isAutoLayoutAlready: boolean = frame.layoutMode !== 'NONE' 
+
+  /* Begin Zero Frame conversion process
+  The resize() API does not allow setting a Frame's height or width 
+  to 0 so instead we create a Line, wrap it in an auto layout frame, convert 
+  the auto layout into a regular frame, and finally remove the Line */
+
   let line: LineNode = figma.createLine()
-  line.resize(length ? length : DEFAULT_FRAME_LENGTH, 0)
+  line.resize(type == ZeroFrameType.WIDTH ? getEffectiveHeight(frame) : getEffectiveWidth(frame), 0)
   line.rotation = type === ZeroFrameType.WIDTH ? 90 : 0
 
-  // Create an AutoLayout Frame
-  let zeroFrame: FrameNode = figma.createFrame()
-  zeroFrame.name = type === ZeroFrameType.WIDTH ? 'Zero Width Frame' : 'Zero Height Frame'
-  zeroFrame.appendChild(line)
-  zeroFrame.layoutMode = "VERTICAL"
-  zeroFrame.primaryAxisSizingMode = "AUTO"
-  zeroFrame.counterAxisSizingMode = "AUTO"
+  frame.appendChild(line)
+  frame.layoutMode = isAutoLayoutAlready ? frame.layoutMode : 'VERTICAL'
+  frame.primaryAxisSizingMode = isAutoLayoutAlready ? computePrimaryAxisSizingMode(type, frame) : 'AUTO'
+  frame.counterAxisSizingMode = isAutoLayoutAlready ? computeCounterAxisSizingMode(type, frame) : 'AUTO'
 
-  // Convert it to regular Frame
-  zeroFrame.layoutMode = "NONE"
+  // Convert to regular frame if it was one before we started converting to zero frame
+  frame.layoutMode = isAutoLayoutAlready ? frame.layoutMode : 'NONE'
 
   // Make it so we can see layers added to the zero frame
-  zeroFrame.clipsContent = false
+  frame.clipsContent = false
 
   // Remove line
   line.remove()
+
+  // Add zero frame type to layer name
+  frame.name = frame.name + (type === ZeroFrameType.WIDTH ? ' (Zero Width)' : ' (Zero Height)')
+
+  /* Zero Frame conversion process complete... 
+  Restore children to the zero frame and orignal coordinates */
+  for (let i in children) {
+    frame.appendChild(children[i].layer)
+    children[i].layer.x = children[i].x
+    children[i].layer.y = children[i].y
+  }
   
   // Return frame for further manipulation
-  return zeroFrame
+  return frame
+}
+
+function computePrimaryAxisSizingMode(type: ZeroFrameType, frame: FrameNode): "FIXED" | "AUTO" {
+  if (isAutoLayout(frame)) {
+    if (frame.layoutMode === 'HORIZONTAL') { // primary axis is x-axis or width
+      return type === ZeroFrameType.WIDTH ? 'FIXED' : frame.primaryAxisSizingMode
+    }
+    else { // primary axis is y-axis or height
+      return type === ZeroFrameType.WIDTH ? frame.primaryAxisSizingMode : 'FIXED'
+    }
+  }
+  else {
+    return 'AUTO'
+  }
+}
+
+function computeCounterAxisSizingMode(type: ZeroFrameType, frame: FrameNode): "FIXED" | "AUTO" {
+  if (isAutoLayout(frame)) {
+    if (frame.layoutMode === 'HORIZONTAL') { // counter axis is y-axis or height
+      return type === ZeroFrameType.WIDTH ? frame.counterAxisSizingMode : 'FIXED'
+    } 
+    else { // counter axis is x-axis or width
+      return type === ZeroFrameType.WIDTH ? 'FIXED' : frame.counterAxisSizingMode
+    }
+  }
+  else {
+    return 'AUTO'
+  }
 }
 
 export enum ZeroFrameType {
