@@ -1,18 +1,24 @@
-import { isFrame, isAutoLayout, isGroup, getEffectiveHeight, getEffectiveWidth } from "./utils"
+import { isFrame, isAutoLayout, isGroup, getEffectiveHeight, getEffectiveWidth, centerInViewport } from "./utils"
 import { ZeroFrameType, _createZeroFrame } from "./zero-frame-lib"
 
 export function addZeroFrame(type: ZeroFrameType) {
   let selection = figma.currentPage.selection
   if (selection.length > 0) {
+    let count = 0
     for (let child of selection) {
       if (isFrame(child)) {
         let zeroFrame = _addZeroFrameToContainer(type, child as FrameNode | GroupNode)
+        count++
       }
     }
+    return `Added zero ${count === 1 ? 'frame' : 'frames'} to ${count} ${count === 1 ? 'frame' : 'frames'}! 🎉`
   }
   else {
     let zeroFrame = _addZeroFrameToCanvas(type)
+    centerInViewport(zeroFrame)
     figma.viewport.scrollAndZoomIntoView([zeroFrame])
+    figma.currentPage.selection = [zeroFrame]
+    return 'Added a zero frame to the canvas! 🎉'
   }
 }
 

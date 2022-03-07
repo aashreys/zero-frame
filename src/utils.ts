@@ -33,3 +33,9 @@ export function getEffectiveWidth(node: SceneNode) {
     return node.width
   }
 }
+
+export function centerInViewport(node: SceneNode) {
+  let viewport = figma.viewport.bounds
+  node.x = viewport.x + (viewport.width / 2) - (node.width / 2)
+  node.y = viewport.y + (viewport.height / 2) - (node.height / 2)
+}

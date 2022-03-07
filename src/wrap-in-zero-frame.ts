@@ -1,11 +1,11 @@
 import { ZeroFrameType, _createZeroFrame } from "./zero-frame-lib";
 
-export function wrapInZeroFrame(type: ZeroFrameType) {
-  let layers = figma.currentPage.selection
-  if (layers.length > 0) {
-    let parent = layers[0].parent;
+export function wrapInZeroFrame(type: ZeroFrameType): string {
+  let selection = figma.currentPage.selection
+  if (selection.length > 0) {
+    let parent = selection[0].parent;
     if (parent) {
-      let tempGroup = figma.group(layers, parent)
+      let tempGroup = figma.group(selection, parent)
       let zeroFrame = _createZeroFrame(type, type === ZeroFrameType.WIDTH ? tempGroup.height : tempGroup.width)
       parent.appendChild(zeroFrame);
       zeroFrame.x = tempGroup.x;
@@ -16,10 +16,11 @@ export function wrapInZeroFrame(type: ZeroFrameType) {
       for (let child of tempGroup.children) {
         zeroFrame.appendChild(child)
       }
+      figma.currentPage.selection = [zeroFrame]
     }
-    figma.closePlugin(`Wrapped ${layers.length} ${layers.length === 1 ? 'layer' : 'layers'} in Zero ${type === ZeroFrameType.WIDTH ? 'Width' : 'Height'} Frame! 🎉`)
+    return `Wrapped ${selection.length} ${selection.length === 1 ? 'layer' : 'layers'} in a zero frame! 🎉`
   }
   else {
-    figma.closePlugin('🛑 Please select one or more layers wrap.')
+    return '🛑 Please select one or more layers wrap.'
   }
 }

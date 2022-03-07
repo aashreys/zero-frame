@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "@create-figma-plugin/utilities": "^1.8.2"
+    "@create-figma-plugin/ui": "^1.8.4",
+    "@create-figma-plugin/utilities": "^1.8.2",
+    "preact": "^10.6.6"
   },
   "devDependencies": {
     "@create-figma-plugin/build": "^1.8.2",
@@ -59,6 +61,15 @@
         "main": {
           "src": "src/main.ts",
           "handler": "wrapInZeroWidthFrame"
+        }
+      },
+      "-",
+      {
+        "name": "🙄 About new menu options...",
+        "ui": "src/readme-ui.tsx",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "showReadme"
         }
       }
     ]

@@ -23,19 +23,33 @@ export function _convertToZeroFrame(type: ZeroFrameType, frame: FrameNode): Fram
     figma.currentPage.appendChild(child)
   }
 
-  let isAutoLayoutAlready: boolean = frame.layoutMode !== 'NONE' 
-
   /* Begin Zero Frame conversion process
   The resize() API does not allow setting a Frame's height or width 
   to 0 so instead we create a Line, wrap it in an auto layout frame, convert 
   the auto layout into a regular frame, and finally remove the Line */
-
   let line: LineNode = figma.createLine()
   line.resize(type == ZeroFrameType.WIDTH ? getEffectiveHeight(frame) : getEffectiveWidth(frame), 0)
   line.rotation = type === ZeroFrameType.WIDTH ? 90 : 0
-
   frame.appendChild(line)
+
+
+  /* Set up frame as autolayout which will be resized to a zero frame with 
+  the line we created above */  
+
+  let isAutoLayoutAlready: boolean = frame.layoutMode !== 'NONE'
+
+  // Remove any padding depending on zero frame type
+  if (type === ZeroFrameType.WIDTH) {
+    frame.paddingLeft = frame.paddingRight = 0
+  }
+  else {
+    frame.paddingTop = frame.paddingBottom = 0
+  }
+
+  // Set layout mode
   frame.layoutMode = isAutoLayoutAlready ? frame.layoutMode : 'VERTICAL'
+
+  // Set sizing modes for primary and counter axis
   frame.primaryAxisSizingMode = isAutoLayoutAlready ? computePrimaryAxisSizingMode(type, frame) : 'AUTO'
   frame.counterAxisSizingMode = isAutoLayoutAlready ? computeCounterAxisSizingMode(type, frame) : 'AUTO'
 
@@ -50,6 +64,8 @@ export function _convertToZeroFrame(type: ZeroFrameType, frame: FrameNode): Fram
 
   // Add zero frame type to layer name
   frame.name = frame.name + (type === ZeroFrameType.WIDTH ? ' (Zero Width)' : ' (Zero Height)')
+
+  console.log(frame.height)
 
   /* Zero Frame conversion process complete... 
   Restore children to the zero frame and orignal coordinates */
