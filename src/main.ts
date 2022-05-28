@@ -5,7 +5,7 @@ import { ZeroFrameType } from "./zero-frame-lib";
 import { showUI } from '@create-figma-plugin/utilities'
 
 export function showReadme() {
-  showUI({ width: 290, height: 302, title: 'Zero Frame Readme' })
+  showUI({ width: 290, height: 316, title: 'Zero Frame Readme' })
 }
 
 export function addZeroHeightFrame() {

@@ -6,7 +6,8 @@ function Plugin() {
   return (
     <div class={styles.container}>
       <Text>
-        New features to Zero Frame would have added too many menu options to be usable, so instead Zero Frame now intelligently runs features based on your selection.
+        Adding new menu options for each new feature in Zero Frame would have resulted in too many 
+        menu options to be usable, so instead Zero Frame now intelligently runs features based on your selection.
       </Text>
 
       <VerticalSpace space="large" />
